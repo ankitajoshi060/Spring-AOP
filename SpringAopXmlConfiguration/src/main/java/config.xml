@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<bean name="product" class="com.springaop.Service.ProductImple" />
+	<bean name="myAspect" class="com.springaop.aspect.MyAspect" />
+
+	<aop:aspectj-autoproxy />
+	<aop:config>
+		<aop:aspect id="aspect" ref="myAspect">
+			<aop:pointcut
+				expression="execution(* com.springaop.Service.ProductImple.productTransaction(..))"
+				id="pointcut" />
+<!-- 			<aop:before method="myadvice" pointcut-ref="pointcut" />
+ -->
+			<aop:pointcut
+				expression="execution(* com.springaop.Service.ProductImple.getAmount(..))"
+				id="afterpointcut" />
+			<aop:after method="afterMyAdvice"
+				pointcut-ref="afterpointcut" />
+
+			<aop:pointcut
+				expression="execution(* com.springaop.Service.ProductImple.getName(..))"
+				id="afterReturningpointcut" />
+			<aop:after-returning
+				method="afterReturningMyAdvice" returning="result"
+				pointcut-ref="afterReturningpointcut" />
+			
+			<aop:after-throwing method="afterThrowingMyAdvice"
+				throwing="error" pointcut-ref="pointcut" />
+				
+			<aop:around method="aroundMyAdvice" pointcut-ref="pointcut"/>	
+
+		</aop:aspect>
+	</aop:config>
+</beans>
